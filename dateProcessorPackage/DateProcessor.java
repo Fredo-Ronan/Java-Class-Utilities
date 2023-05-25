@@ -3,9 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 
-package dateProcessorPackage;
-
-import dateProcessorPackage.Exceptions.*;
+package customdateprocessor;
 
 /**
  *
@@ -70,9 +68,9 @@ public class DateProcessor {
     
     
     // untuk mendapatkan posisi index dari String date sesuai format yang di inginkan
-    private int getPositionIndexDate(String find){
+    private int getPositionIndexDate(char find){
         for(int i = 0; i<format.length(); i++){
-            if(format.equalsIgnoreCase(find)){
+            if(format.charAt(i) == find){
                 return i;
             }
         }
@@ -92,39 +90,48 @@ public class DateProcessor {
         // lalu traversal ke karakter - karakter yang di cari
         if(getWhat.equalsIgnoreCase("Day")){
             // dd
-            start = end = getPositionIndexDate("d");
+            start = end = getPositionIndexDate('d');
             
-            while(isNext(start, format)){
+            while(isNext(end, format)){
                 end++;
             }
             
-            return format.substring(start, end);
+            end++;
+            
+            return date.substring(start, end);
         }
         
         // Untuk mendapatkan nilai bulan menggunakan fungsi yang sama seperti di atas termasuk dengan
         // semua mekanismenya
         if(getWhat.equalsIgnoreCase("Month")){
             // mm
-            start = end = getPositionIndexDate("m");
+            start = end = getPositionIndexDate('m');
             
-            while(isNext(start, format)){
+            while(isNext(end, format)){
                 end++;
             }
             
-            return format.substring(start, end);
+            end++;
+            
+            return date.substring(start, end);
         }
         
         // Untuk mendapatkan nilai tahun menggunakan fungsi yang sama seperti di atas termasuk dengan
         // semua mekanismenya
         if(getWhat.equalsIgnoreCase("Year")){
             // yyyy
-            start = end = getPositionIndexDate("y");
+            start = end = getPositionIndexDate('y');
             
-            while(isNext(start, format)){
+            while(isNext(end, format)){
                 end++;
+                
+                if(end==9)
+                    break;
             }
             
-            return format.substring(start, end);
+            end++;
+            
+            return date.substring(start, end);
         }
         
         return "";
@@ -208,7 +215,11 @@ public class DateProcessor {
         return false;
     }
     
-    public void createDate(String inputDate) throws DateProcessorDateException {
+    public void createDate(String inputDate) throws DateProcessorDateException, DateProcessorFormatLengthException {
+        if(inputDate.length()!=10){
+            throw new DateProcessorFormatLengthException("\n\t[!] Format must be 10 characters length [!]");
+        }
+        
         if(isDateValid(inputDate)){
             this.date = inputDate;
         } else {
